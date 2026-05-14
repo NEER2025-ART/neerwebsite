@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>证件照拍摄抠图打印</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Camera · Cutout · Background · Print</p>
+        <h1>拍照抠图换背景，并直接打印照片</h1>
+        <p class="subtitle">
+          连接摄像头拍摄人像，使用绿色/纯色背景抠图，替换为证件照常用背景色或自定义图片，最后调用系统打印机打印。
+        </p>
+      </div>
+      <div class="status-card" aria-live="polite">
+        <span id="cameraStatus" class="dot-label"><span class="dot"></span> 摄像头未启动</span>
+        <span id="printStatus">打印：浏览器将打开系统打印窗口</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="panel controls-panel" aria-labelledby="capture-title">
+        <h2 id="capture-title">1. 拍摄照片</h2>
+        <div class="camera-box">
+          <video id="camera" autoplay playsinline muted aria-label="摄像头预览"></video>
+          <canvas id="snapshot" class="hidden"></canvas>
+        </div>
+        <div class="button-row">
+          <button id="startCamera" class="primary">启动摄像头</button>
+          <button id="capturePhoto">拍照</button>
+          <label class="file-button">
+            导入照片
+            <input id="photoUpload" type="file" accept="image/*" />
+          </label>
+        </div>
+        <p class="hint">提示：为了自动抠图效果更好，请站在绿色、蓝色或纯色背景前。</p>
+      </section>
+
+      <section class="panel controls-panel" aria-labelledby="cutout-title">
+        <h2 id="cutout-title">2. 抠图与换背景</h2>
+        <div class="form-grid">
+          <label>
+            抠图背景色
+            <input id="keyColor" type="color" value="#24b45a" />
+          </label>
+          <label>
+            抠图容差 <span id="toleranceValue">70</span>
+            <input id="tolerance" type="range" min="10" max="180" value="70" />
+          </label>
+          <label>
+            边缘柔化 <span id="softnessValue">18</span>
+            <input id="softness" type="range" min="0" max="80" value="18" />
+          </label>
+          <label>
+            照片规格
+            <select id="photoSize">
+              <option value="passport">2寸证件照 35×49mm</option>
+              <option value="oneInch">1寸证件照 25×35mm</option>
+              <option value="square">方形头像 100×100mm</option>
+              <option value="postcard">明信片 100×148mm</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="swatches" aria-label="常用背景色">
+          <button class="swatch" data-bg="#ffffff" style="--swatch: #ffffff">白</button>
+          <button class="swatch" data-bg="#2f7df6" style="--swatch: #2f7df6">蓝</button>
+          <button class="swatch" data-bg="#e53935" style="--swatch: #e53935">红</button>
+          <button class="swatch" data-bg="#d9e9ff" style="--swatch: #d9e9ff">浅蓝</button>
+          <button class="swatch" data-bg="#f7f7f7" style="--swatch: #f7f7f7">灰</button>
+        </div>
+
+        <div class="button-row wrap">
+          <label>
+            自定义背景色
+            <input id="backgroundColor" type="color" value="#2f7df6" />
+          </label>
+          <label class="file-button">
+            上传背景图
+            <input id="backgroundUpload" type="file" accept="image/*" />
+          </label>
+          <button id="applyCutout" class="primary">生成照片</button>
+          <button id="resetBackground">清除背景图</button>
+        </div>
+      </section>
+
+      <section class="panel preview-panel" aria-labelledby="preview-title">
+        <div class="preview-heading">
+          <div>
+            <h2 id="preview-title">3. 预览与打印</h2>
+            <p>确认效果后可下载图片，或连接打印机并使用系统打印对话框打印。</p>
+          </div>
+          <div class="button-row">
+            <button id="downloadPhoto">下载照片</button>
+            <button id="printPhoto" class="primary">打印照片</button>
+          </div>
+        </div>
+        <div id="printArea" class="print-area">
+          <canvas id="result" aria-label="处理后的照片预览"></canvas>
+        </div>
+        <p id="emptyState" class="empty-state">请先拍照或导入照片，然后点击“生成照片”。</p>
+      </section>
+    </main>
+
+    <footer>
+      <strong>说明：</strong>浏览器出于安全限制不能静默控制打印机，本应用会调用系统打印窗口；首次使用摄像头时需要允许浏览器权限。
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
